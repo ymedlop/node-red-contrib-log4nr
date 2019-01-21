@@ -157,17 +157,18 @@ function getFieldValue(node, msg, dataPath) {
   const regexp = _dataPath.match(/^([^\.]+)\./);
   const contextType = regexp ? regexp[1] : "";
   const field = _dataPath.substring(contextType.length+1);
-
-  if (contextType === "msg") {
-    return getMessageProperty(msg, field);
-  }
-  else if (contextType === "flow") {
-    return node.context().flow.get(field);
-  }
-  else if (contextType === "global") {
-    return node.context().global.get(field);
-  }
-  else {
+  try {
+    if (contextType === "msg") {
+      return getMessageProperty(msg, field);
+    }
+    else if (contextType === "flow") {
+      return node.context().flow.get(field);
+    }
+    else if (contextType === "global") {
+      return node.context().global.get(field);
+    }
+  } catch(err) {
+    console.error(`Error to get ${field} with message:`, err);
     return undefined;
   }
 }
